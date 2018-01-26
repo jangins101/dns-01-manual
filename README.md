@@ -7,6 +7,8 @@ When using this hook the script will tell you what to do to complete the **DNS-0
 
 ## Examples
 
+``/path/to/dehydrated --challenge dns-01 --hook hook.sh --domain test.example.com --config /path/to/config``
+
 ``/path/to/dehydrated --challenge dns-01 --hook /path/to/hook.sh --signcsr /path/to/csr.pem``
 
 ``/path/to/dehydrated --challenge dns-01 --hook /path/to/hook.sh --revoke /path/to/cert.pem``
@@ -14,38 +16,55 @@ When using this hook the script will tell you what to do to complete the **DNS-0
 
 ## Example run
 ```
-./dehydrated --challenge dns-01 --hook hook.sh --signcsr csr.pem
-#
-# !! WARNING !! No main config file found, using default config!
-#
- + Requesting challenge for example.com...
+./dehydrated --challenge dns-01 --hook hook.sh --domain test.example.com --config /path/to/config
 
-Add the following to the zone definition of example.com:
-_acme-challenge.example.com. IN TXT "aaabbbcccddeeefffgghhh"
+# INFO: Using main config file /path/to/config
 
-Press enter to continue...
+Startup Hook Executed (startup_hook)y
+Processing test.example.com
+ + Checking domain name(s) of existing cert... unchanged.
+ + Checking expire date of existing cert...
+ + Valid till Apr 1 12:00:00 2018 GMT (Longer than 30 days). Ignoring because renew was forced!
+ + Signing domains...
+ + Generating private key...
+ + Generating signing request...
+ + Requesting challenge for test.example.com...
 
- + Responding to challenge for example.com...
+Deploy Challenge Token
+  Add the following TXT record to the zone definition of test.example.com:
 
-Now you can remove the following from the zone definition of example.com:
-_acme-challenge.example.com. IN TXT "aaabbbcccddeeefffgghhh"
+    Name : _acme-challenge.test.example.com
+    Value: aaaaaaabbbbbbbcccccccdddddddeeeeeeefffffffg
 
-Press enter to continue...
+  Press enter to continue...
+
+ + Responding to challenge for test.example.com...
+
+Clean Challenge Token
+  You can remove the following TXT record from the zone definition of test.example.com:
+
+    Name : _acme-challenge.test.example.com
+    Value: aaaaaaabbbbbbbcccccccdddddddeeeeeeefffffffg
+
+  Press enter to continue...
 
  + Challenge is valid!
  + Requesting certificate...
  + Checking certificate...
  + Done!
-# CERT #
------BEGIN CERTIFICATE-----
-EeMCjTofKBwgswBcHwVzMlODuDdqRyuYslQxzBAXCuQabxDwPSJOSQAKKe8vCQhP
-rSgjV8QpEAEG4bfnVkh18FTKk3zQgJGG48sElS2VNXfl0JGfb66TX522p1eFYz42
-...
-XqRsfQudZfk9u5Z8E425XdC3GmA35Cc44LTOadp25EWAZQ013qwadCmBBcktgJyt
-thK8wd9TGootJEI0RP118rG8Yn6vhgjsokGIkn4LWBIBkUcvAfJxH0rTyDDUTgYs
-6tTMeaOh7D7TiO6uCXzBP12jw9HHNDwnENyJ2TlWEIa3t9bKFNMVKptAVJPgzHDk
-c7ioHWFW4KtikrMsioo3HKHcmQFniPSYmNJeaH2LLKVWoI5w8XHG7i8dzcFDhGKF
------END CERTIFICATE-----
+ + Creating fullchain.pem...
+ + Using cached chain!
+
+Deploy Certificate
+  Timestamp  : 1234567890
+  Certificate: ../certs/test.example.com/cert.pem
+  Key        : ../certs/test.example.com/privkey.pem
+  Full Chain : ../certs/test.example.com/fullchain.pem
+  Chain      : ../certs/test.example.com/chain.pem
+
+ + Done!
+
+Exit hook executed
 ```
 
 ## More info
